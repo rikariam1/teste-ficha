@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página com Fundo Preto e Abas Responsivas</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            background-color: #111;
+            padding: 10px;
+            border-bottom: 1px solid #444;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            color: #fff;
+            background-color: #222;
+            border-radius: 5px 5px 0 0;
+            flex: 1;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .tab:hover {
+            background-color: #333;
+        }
+
+        .tab.active {
+            background-color: #333;
+            border-bottom: 2px solid rgb(201, 47, 162);
+        }
+
+        .content {
+            display: none;
+            padding: 20px;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .dropdown {
+            display: none;
+            position: relative;
+            width: 100%;
+            background-color: #111;
+            text-align: center;
+        }
+
+        .dropdown button {
+            background-color: #111;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .dropdown button:hover {
+            background-color: #222;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #111;
+            width: 100%;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content .tab {
+            border-radius: 0;
+            border-bottom: 1px solid #444;
+            margin: 0;
+            text-align: left;
+        }
+
+        .dropdown-content .tab:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content .tab:hover {
+            background-color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                display: none;
+            }
+
+            .dropdown {
+                display: block;
+            }
+
+            .dropdown button {
+                text-align: center;
+                background-color: #222;
+            }
+        }
+        @media (min-width: 769px) {
+            .tabs .tab:first-child {
+                 display: none; /* Oculta a primeira aba "PERSONAGEM" em dispositivos maiores */
+            }
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px; /* Ajustar a margem inferior */
+            width: 100%; /* Para garantir que os campos ocupem a largura total */
+        }
+
+        .form-group label {
+            margin-right: 10px;
+            flex: 0 0 70px; /* Ajustar a largura fixa para alinhar os campos */
+        }
+
+        .form-group input {
+            border: none;
+            border-bottom: 1px solid #fff;
+            background: none;
+            color: #fff;
+            width: 100%;
+            padding: 2px 0;
+        }
+
+        .form-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start; /* Alinhar os itens à esquerda */
+            width: 100%;
+            margin: auto;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                max-width: 100%;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .form-container {
+                max-width: 40%; /* Ajustar a largura para 50% em computadores */
+            }
+        }
+
+        .square {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #fff;
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .square img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .square .editable-area {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 0, 0, 0.3); /* Cor de fundo para visualização */
+            pointer-events: auto; /* Permitir que os eventos de clique passem através dela */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .square .editable-area[contenteditable="true"] {
+            color: #fff;
+            text-align: center;
+        }
+
+        .square input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .personagem-content {
+            display: flex;
+            align-items: center; /* Alinhar verticalmente */
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .personagem-content .square {
+            margin: 20px;
+        }
+
+        .personagem-content .form-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column; /* Garantir que os campos fiquem em coluna */
+            flex-wrap: wrap;
+            margin-left: 20px; /* Adicionar margem esquerda */
+        }
+
+        .gallery {
+            display: flex;
+            flex-direction: row; /* Para dispositivos maiores */
+            align-items: flex-start; /* Alinhar à esquerda */
+            margin-top: 5px;
+            margin-left: -5px; /* Adicionar margem à esquerda para alinhar com o formulário */
+        }
+
+        .gallery .editable-image {
+            position: relative;
+            width: 150px;
+            margin-bottom: 10px;
+        }
+
+        .gallery .editable-overlay {
+            position: absolute;
+            top: 36px;
+            left: 48px;
+            width: 50px;
+            height: 45px;
+            background-color: transparent; /* Cor de fundo para visualização */
+            pointer-events: auto; /* Permitir eventos de clique */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 35px;
+        }
+
+        .gallery .editable-overlay[contenteditable="true"] {
+            color: #fff;
+            text-align: center;
+        }
+
+        .gallery .result-overlay {
+            position: absolute;
+            top: 85px;
+            left: 54px;
+            width: 35px;
+            height: 35px;
+            background-color: transparent; /* Cor de fundo para visualização */
+            pointer-events: none; /* Não permitir eventos de clique */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 25px;
+            color: rgb(201, 47, 162); /* Cor do texto do resultado */
+        }
+
+        .gallery img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                flex-direction: column; /* Ajustar para coluna vertical em dispositivos móveis */
+                align-items: left; /* Centralizar os itens */
+            }
+        }
+        @media (min-width: 769px) {
+            #dados-pessoais {
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tabs">
+        <div class="tab active" onclick="showContent('dados-pessoais', this)">PERSONAGEM</div>
+        <div class="tab" onclick="showContent('inventario', this)">INVENTÁRIO</div>
+        <div class="tab" onclick="showContent('habilidades', this)">HABILIDADES</div>
+        <div class="tab" onclick="showContent('magias', this)">MAGIAS</div>
+    </div>
+
+    <div class="dropdown">
+        <button id="currentTab" onclick="toggleDropdown()">PERSONAGEM</button>
+        <div class="dropdown-content">
+            <div class="tab" onclick="showContent('dados-pessoais', this)">PERSONAGEM</div>
+            <div class="tab" onclick="showContent('inventario', this)">INVENTÁRIO</div>
+            <div class="tab" onclick="showContent('habilidades', this)">HABILIDADES</div>
+            <div class="tab" onclick="showContent('magias', this)">MAGIAS</div>
+        </div>
+    </div>
+
+    <div id="dados-pessoais" class="content active">
+        <div class="personagem-content">
+            <div class="square" onclick="selectImage()">
+                <input type="file" id="imageUpload" accept="image/*">
+                <img id="uploadedImage" src="https://i.imgur.com/J97O7vU.png" alt="Imagem selecionada">
+                <!-- Área editável -->
+            </div>
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="nome">NOME:</label>
+                    <input type="text" id="nome" name="nome">
+                </div>
+                <div class="form-group">
+                    <label for="idade">IDADE:</label>
+                    <input type="text" id="idade" name="idade">
+                </div>
+                <div class="form-group">
+                    <label for="peso">PESO:</label>
+                    <input type="text" id="peso" name="peso">
+                </div>
+                <div class="form-group">
+                    <label for="altura">ALTURA:</label>
+                    <input type="text" id="altura" name="altura">
+                </div>
+            </div>
+        </div>
+        <div class="gallery">
+            <div class="editable-image">
+                <img src="https://i.imgur.com/vEsyp9g.png" alt="Imagem 1">
+                <div class="editable-overlay" contenteditable oninput="calculateAndDisplay(this, 0)"></div>
+                <div class="result-overlay" id="result0"></div>
+            </div>
+            <div class="editable-image">
+                <img src="https://i.imgur.com/HxJN90Y.png" alt="Imagem 2">
+                <div class="editable-overlay" contenteditable oninput="calculateAndDisplay(this, 1)"></div>
+                <div class="result-overlay" id="result1"></div>
+            </div>
+            <div class="editable-image">
+                <img src="https://i.imgur.com/u2qdjIx.png" alt="Imagem 3">
+                <div class="editable-overlay" contenteditable oninput="calculateAndDisplay(this, 2)"></div>
+                <div class="result-overlay" id="result2"></div>
+            </div>
+            <div class="editable-image">
+                <img src="https://i.imgur.com/0NHUeVr.png" alt="Imagem 4">
+                <div class="editable-overlay" contenteditable oninput="calculateAndDisplay(this, 3)"></div>
+                <div class="result-overlay" id="result3"></div>
+            </div>
+            <div class="editable-image">
+                <img src="https://i.imgur.com/fGgNQrQ.png" alt="Imagem 5">
+                <div class="editable-overlay" contenteditable oninput="calculateAndDisplay(this, 4)"></div>
+                <div class="result-overlay" id="result4"></div>
+            </div>
+        </div>
+    </div>
+    <div id="inventario" class="content">
+        <h2>INVENTÁRIO</h2>
+        <p>Conteúdo da aba de Inventário.</p>
+    </div>
+    <div id="habilidades" class="content">
+        <h2>HABILIDADES</h2>
+        <p>Conteúdo da aba de Habilidades.</p>
+    </div>
+    <div id="magias" class="content">
+        <h2>MAGIAS</h2>
+        <p>Conteúdo da aba de Magias.</p>
+    </div>
+
+    <script>
+        function showContent(tabId, element) {
+            // Esconder todos os conteúdos
+            var contents = document.querySelectorAll('.content');
+            contents.forEach(function(content) {
+                content.classList.remove('active');
+            });
+
+            // Desativar todas as abas
+            var tabs = document.querySelectorAll('.tab');
+            tabs.forEach(function(tab) {
+                tab.classList.remove('active');
+            });
+
+            // Mostrar o conteúdo da aba selecionada
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+
+            // Atualizar o texto do botão dropdown
+            var currentTab = document.getElementById('currentTab');
+            currentTab.innerText = element.innerText;
+
+            // Fechar o dropdown se em dispositivo móvel
+            if (window.innerWidth <= 768) {
+                toggleDropdown();
+            }
+        }
+
+        function toggleDropdown() {
+            var dropdownContent = document.querySelector('.dropdown-content');
+            if (dropdownContent.style.display === 'block') {
+                dropdownContent.style.display = 'none';
+            } else {
+                dropdownContent.style.display = 'block';
+            }
+        }
+
+        function closeDropdown(event) {
+            var dropdownContent = document.querySelector('.dropdown-content');
+            var currentTab = document.getElementById('currentTab');
+            if (dropdownContent.style.display === 'block' && !currentTab.contains(event.target) && !dropdownContent.contains(event.target)) {
+                dropdownContent.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('click', closeDropdown);
+
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                var dropdownContent = document.querySelector('.dropdown-content');
+                dropdownContent.style.display = 'none';
+            }
+        });
+
+        function selectImage() {
+            var input = document.getElementById('imageUpload');
+            input.onchange = function(event) {
+                var file = event.target.files[0];
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.getElementById('uploadedImage');
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            };
+            input.click(); // Simular o clique para abrir o seletor de arquivo
+        }
+
+        function calculateAndDisplay(element, index) {
+            var value = parseFloat(element.innerText);
+            var resultElement = document.getElementById('result' + index);
+            if (!isNaN(value)) {
+                var result = Math.floor((value - 10) / 2);
+                resultElement.innerText = (result > 0 ? '+' : '') + result;
+            } else {
+                resultElement.innerText = '';
+            }
+        }
+    </script>
+</body>
+</html>
